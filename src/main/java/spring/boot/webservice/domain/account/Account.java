@@ -1,13 +1,10 @@
 package spring.boot.webservice.domain.account;
 
-import org.springframework.data.annotation.Id;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.Column;
 
 @Entity
-@Table(name="account")
 public class Account {
 
     @Id
