@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import spring.boot.webservice.config.Security;
 import spring.boot.webservice.util.Uuid;
 
 import java.util.Arrays;
@@ -31,7 +30,7 @@ public class AccountService implements UserDetailsService{
 
     public Account creatAccount(String username, String password) {
 
-        logger.info(">>> username" + username);
+        logger.info(">>> CREATE ACCOUNT username : " + username);
 
         Uuid uuid = new Uuid();
         Account account = new Account();
@@ -41,15 +40,29 @@ public class AccountService implements UserDetailsService{
         return accountRepository.save(account);
     }
 
+    public Optional<Account> authAccount(String username, String password){
+
+        logger.info(">>> AUTH ACCOUNT username : " + username);
+        logger.info(">>> AUTH ACCOUNT username : " + passwordEncoder.encode(password));
+
+        Optional<Account> account = accountRepository.findByUsernameAndPassword(username, passwordEncoder.encode(password));
+
+        return account;
+
+    }
+
+    private Collection<? extends GrantedAuthority> authorities() {
+        return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    }
+
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Account> byUsername = accountRepository.findByUsername(username);
         Account account = byUsername.orElseThrow(() -> new UsernameNotFoundException(username));
-        return new User(account.getUsername(), account.getPassword(), authorities());
-    }
-
-    private Collection<? extends GrantedAuthority> authorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+        User user = new User(account.getUsername(), account.getPassword(), authorities());
+        System.out.println(user.getUsername() + " " + user.getPassword());
+        return user;
     }
 
 }

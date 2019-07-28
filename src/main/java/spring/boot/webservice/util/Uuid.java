@@ -1,6 +1,7 @@
 package spring.boot.webservice.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class Uuid {
@@ -9,7 +10,9 @@ public class Uuid {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss", Locale.KOREA);
 
-        String uuid = String.valueOf(sdf);
+        Date date = new Date();
+
+        String uuid = sdf.format(date);
 
         return uuid;
     }
